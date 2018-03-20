@@ -50,8 +50,8 @@
       <file leaf-file-name="ChatServer.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/chatserver/ChatServer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="771">
-              <caret line="364" column="68" lean-forward="false" selection-start-line="364" selection-start-column="68" selection-end-line="364" selection-end-column="68" />
+            <state relative-caret-position="414">
+              <caret line="382" column="62" lean-forward="false" selection-start-line="382" selection-start-column="62" selection-end-line="382" selection-end-column="62" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#2158#2369#0" expanded="true" />
@@ -402,8 +402,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/chatserver/ChatServer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="771">
-          <caret line="364" column="68" lean-forward="false" selection-start-line="364" selection-start-column="68" selection-end-line="364" selection-end-column="68" />
+        <state relative-caret-position="414">
+          <caret line="382" column="62" lean-forward="false" selection-start-line="382" selection-start-column="62" selection-end-line="382" selection-end-column="62" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#2158#2369#0" expanded="true" />

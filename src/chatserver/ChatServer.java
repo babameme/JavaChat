@@ -372,8 +372,19 @@ public class ChatServer extends Frame implements Serializable, ActionListener, R
             SendMessageToClient(clientSocket,"KICK ");
             messageArrayList.clear();
         }
+    }
+
+    // Gui tin nhan rieng tu
+    protected void SendPrivateMessage(String message , String ToUserName)
+    {
+        clientObject = GetClientObject(ToUserName);
+        if(clientObject != null)
+        {
+            SendMessageToClient(clientObject.getClientSocket(),"PRIV " + message);
+        }
 
     }
+
 
 
 
