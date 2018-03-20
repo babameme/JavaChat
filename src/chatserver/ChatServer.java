@@ -231,6 +231,59 @@ public class ChatServer extends Frame implements Serializable, ActionListener, R
         SendMessageToClient(ClientSocket,stringbuffer.toString());
     }
 
+    /**********Xoa nguoi dung khoi Server**************/
+    public void RemoveUser(String UserName, String RoomName, int RemoveType)
+    {
+        ClientObject removeClientObject = GetClientObject(UserName);
+        if(removeClientObject != null)
+        {
+            userArrayList.remove(removeClientObject);
+            userArrayList.trimToSize();
+            int m_userListSize = userArrayList.size();
+            String m_RemoveRFC=null;
+            if(RemoveType == REMOVE_USER)
+                m_RemoveRFC = "REMO "+UserName;
+            if(RemoveType == KICK_USER)
+                m_RemoveRFC = "INKI "+UserName;
+            /*****Gui ma REMO toi cac user khac****/
+            for(G_ILoop = 0; G_ILoop < m_userListSize; G_ILoop++)
+            {
+                clientObject = (ClientObject) userArrayList.get(G_ILoop);
+                if(clientObject.getClientRoomName().equals(RoomName))
+                    SendMessageToClient(clientObject.getClientSocket(),m_RemoveRFC);
+            }
+        }
+    }
+
+    /**********Xoa nguoi dung khi co Exception **************/
+    protected void RemoveUserWhenException(Socket clientsocket)
+    {
+        int m_userListSize = userArrayList.size();
+        ClientObject removeclientobject;
+        for(G_ILoop = 0; G_ILoop < m_userListSize; G_ILoop++)
+        {
+            removeclientobject = (ClientObject) userArrayList.get(G_ILoop);
+            if(removeclientobject.getClientSocket().equals(clientsocket))
+            {
+                String m_RemoveUserName = removeclientobject.getClientUserName();
+                String m_RemoveRoomName = removeclientobject.getClientRoomName();
+                userArrayList.remove(removeclientobject);
+                userArrayList.trimToSize();
+                m_userListSize = userArrayList.size();
+                String m_RemoveRFC="REMO " + m_RemoveUserName;
+
+                /*****Gui ma REMO RFC toi cac nguoi dung khac****/
+                for(int m_ILoop = 0; m_ILoop < m_userListSize; m_ILoop++)
+                {
+                    clientObject = 	(ClientObject) userArrayList.get(m_ILoop);
+                    if(clientObject.getClientRoomName().equals(m_RemoveRoomName))
+                        SendMessageToClient(clientObject.getClientSocket(),m_RemoveRFC);
+                }
+                return;
+            }
+        }
+    }
+
     private void ExitServer() {
         // Xoa object
         if(thread != null)
