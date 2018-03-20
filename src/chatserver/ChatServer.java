@@ -191,7 +191,45 @@ public class ChatServer extends Frame implements Serializable, ActionListener, R
         }
         return -1;
     }
-    
+
+    // Them Client ung voi Socket va UserName vao Server List
+    protected void AddUser(Socket ClientSocket,String userName)
+    {
+        /***Neu da ton tai thi return**/
+        if(IsUserExists(userName))
+        {
+            SendMessageToClient(ClientSocket,"EXIS");
+            return;
+        }
+
+        /****Gui di mot Room list **/
+        SendMessageToClient(ClientSocket,"ROOM "+roomList);
+
+        /******Gui thong tin user moi toi tat ca User****/
+        int m_userListSize = userArrayList.size();
+        String m_addRFC = "ADD  "+ userName;
+        StringBuffer stringbuffer = new StringBuffer("LIST ");
+        for(G_ILoop = 0; G_ILoop < m_userListSize; G_ILoop++)
+        {
+            clientObject = (ClientObject) userArrayList.get(G_ILoop);
+            /***Kiem tra ten phong*****/
+            if(clientObject.getClientRoomName().equals(ROOM_NAME))
+            {
+                SendMessageToClient(clientObject.getClientSocket(),m_addRFC);
+                stringbuffer.append(clientObject.getClientUserName());
+                stringbuffer.append(";");
+            }
+        }
+
+        /*****Them user vao array list***/
+        clientObject = new ClientObject(ClientSocket, userName, ROOM_NAME);
+        userArrayList.add(clientObject);
+
+        /********Gui userName toi list nguoi dung moi***********/
+        stringbuffer.append(userName);
+        stringbuffer.append(";");
+        SendMessageToClient(ClientSocket,stringbuffer.toString());
+    }
 
     private void ExitServer() {
         // Xoa object
