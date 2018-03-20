@@ -153,7 +153,45 @@ public class ChatServer extends Frame implements Serializable, ActionListener, R
         } catch (IOException _IOExc){}
     }
 
+    // Tra ve doi tuong Client voi User Name
+    private ClientObject GetClientObject(String userName) {
+        ClientObject returnClientObject = null;
+        ClientObject TempClientObject;
+        int m_userListSize = userArrayList.size();
+        for (G_ILoop = 0; G_ILoop < m_userListSize; G_ILoop++) {
+            TempClientObject = (ClientObject) userArrayList.get(G_ILoop);
+            if (TempClientObject.getClientUserName().equalsIgnoreCase(userName)) {
+                returnClientObject = TempClientObject;
+                break;
+            }
+        }
+        return returnClientObject;
+    }
 
+    // Check neu user Name ton tai
+    private boolean IsUserExists(String userName)
+    {
+        if(GetClientObject(userName) != null){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    // Lay chi so cua userName
+    private int GetIndexOf(String userName)
+    {
+        int m_userListSize = userArrayList.size();
+        for(G_ILoop = 0; G_ILoop < 	m_userListSize; G_ILoop++)
+        {
+            clientObject = (ClientObject) userArrayList.get(G_ILoop);
+            if(clientObject.getClientUserName().equalsIgnoreCase(userName))
+                return G_ILoop;
+        }
+        return -1;
+    }
+    
 
     private void ExitServer() {
         // Xoa object
