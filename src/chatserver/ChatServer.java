@@ -385,6 +385,20 @@ public class ChatServer extends Frame implements Serializable, ActionListener, R
 
     }
 
+    // Dem so luong nguoi dung trong phong
+    protected void GetUserCount(Socket clientSocket,String roomName)
+    {
+        int m_userListSize = userArrayList.size();
+        int m_userCount = 0;
+        for(G_ILoop = 0; G_ILoop < m_userListSize; G_ILoop++)
+        {
+            clientObject = (ClientObject) userArrayList.get(G_ILoop);
+            if(clientObject.getClientRoomName().equals(roomName))
+                m_userCount++;
+        }
+
+        SendMessageToClient(clientSocket,"ROCO " + roomName + "~" + m_userCount);
+    }
 
 
 
