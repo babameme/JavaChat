@@ -134,7 +134,7 @@ public class ChatServer extends Frame implements Serializable, ActionListener, R
         while (thread != null){
             try{
                 socket = serverSocket.accept();
-                chatCommunication = new ChatCommunication(this.socket);
+                chatCommunication = new ChatCommunication(socket, this);
                 thread.sleep(THREAD_SLEEP_TIME);
             }
             catch(InterruptedException _INExc){
@@ -400,8 +400,6 @@ public class ChatServer extends Frame implements Serializable, ActionListener, R
         SendMessageToClient(clientSocket,"ROCO " + roomName + "~" + m_userCount);
     }
 
-
-
     private void ExitServer() {
         // Xoa object
         if(thread != null)
@@ -421,4 +419,6 @@ public class ChatServer extends Frame implements Serializable, ActionListener, R
         cmdStop.setEnabled(false);
         cmdStart.setEnabled(true);
     }
+
+
 }
