@@ -193,17 +193,17 @@ public class ChatServer extends Frame implements Serializable, ActionListener, R
     }
 
     // Them Client ung voi Socket va UserName vao Server List
-    protected void AddUser(Socket ClientSocket,String userName)
+    protected void AddUser(Socket clientSocket,String userName)
     {
         /***Neu da ton tai thi return**/
         if(IsUserExists(userName))
         {
-            SendMessageToClient(ClientSocket,"EXIS");
+            SendMessageToClient(clientSocket,"EXIS");
             return;
         }
 
         /****Gui di mot Room list **/
-        SendMessageToClient(ClientSocket,"ROOM "+roomList);
+        SendMessageToClient(clientSocket,"ROOM "+roomList);
 
         /******Gui thong tin user moi toi tat ca User****/
         int m_userListSize = userArrayList.size();
@@ -222,48 +222,48 @@ public class ChatServer extends Frame implements Serializable, ActionListener, R
         }
 
         /*****Them user vao array list***/
-        clientObject = new ClientObject(ClientSocket, userName, ROOM_NAME);
+        clientObject = new ClientObject(clientSocket, userName, ROOM_NAME);
         userArrayList.add(clientObject);
 
         /********Gui userName toi list nguoi dung moi***********/
         stringbuffer.append(userName);
         stringbuffer.append(";");
-        SendMessageToClient(ClientSocket,stringbuffer.toString());
+        SendMessageToClient(clientSocket,stringbuffer.toString());
     }
 
     /**********Xoa nguoi dung khoi Server**************/
-    public void RemoveUser(String UserName, String RoomName, int RemoveType)
+    public void RemoveUser(String userName, String roomName, int removeType)
     {
-        ClientObject removeClientObject = GetClientObject(UserName);
+        ClientObject removeClientObject = GetClientObject(userName);
         if(removeClientObject != null)
         {
             userArrayList.remove(removeClientObject);
             userArrayList.trimToSize();
             int m_userListSize = userArrayList.size();
             String m_RemoveRFC=null;
-            if(RemoveType == REMOVE_USER)
-                m_RemoveRFC = "REMO "+UserName;
-            if(RemoveType == KICK_USER)
-                m_RemoveRFC = "INKI "+UserName;
+            if(removeType == REMOVE_USER)
+                m_RemoveRFC = "REMO " + userName;
+            if(removeType == KICK_USER)
+                m_RemoveRFC = "INKI " + userName;
             /*****Gui ma REMO toi cac user khac****/
             for(G_ILoop = 0; G_ILoop < m_userListSize; G_ILoop++)
             {
                 clientObject = (ClientObject) userArrayList.get(G_ILoop);
-                if(clientObject.getClientRoomName().equals(RoomName))
+                if(clientObject.getClientRoomName().equals(roomName))
                     SendMessageToClient(clientObject.getClientSocket(),m_RemoveRFC);
             }
         }
     }
 
     /**********Xoa nguoi dung khi co Exception **************/
-    protected void RemoveUserWhenException(Socket clientsocket)
+    protected void RemoveUserWhenException(Socket clientSocket)
     {
         int m_userListSize = userArrayList.size();
         ClientObject removeclientobject;
         for(G_ILoop = 0; G_ILoop < m_userListSize; G_ILoop++)
         {
             removeclientobject = (ClientObject) userArrayList.get(G_ILoop);
-            if(removeclientobject.getClientSocket().equals(clientsocket))
+            if(removeclientobject.getClientSocket().equals(clientSocket))
             {
                 String m_RemoveUserName = removeclientobject.getClientUserName();
                 String m_RemoveRoomName = removeclientobject.getClientRoomName();
@@ -283,6 +283,51 @@ public class ChatServer extends Frame implements Serializable, ActionListener, R
             }
         }
     }
+
+    /*********Doi phong ***********/
+    public void ChangeRoom(Socket clientSocket,String userName, String newRoomName)
+    {
+        int m_clientIndex = GetIndexOf(userName);
+        if(m_clientIndex >= 0)
+        {
+            /********Update the Old Room to New Room and send the RFC**********/
+            ClientObject TempClientObject = (ClientObject) userArrayList.get(m_clientIndex);
+            String m_oldRoomName = TempClientObject.getClientRoomName();
+            TempClientObject.setClientRoomName(newRoomName);
+            userArrayList.set(m_clientIndex,TempClientObject);
+            SendMessageToClient(clientSocket,"CHRO " + newRoomName);
+
+            /****Send all the Users list of that particular room to that client socket****/
+            int m_userListSize = userArrayList.size();
+            StringBuffer stringbuffer = new StringBuffer("LIST ");
+            for(G_ILoop = 0; G_ILoop < m_userListSize; G_ILoop++)
+            {
+                clientObject = (ClientObject) userArrayList.get(G_ILoop);
+                /***Check the Room Name*****/
+                if(clientObject.getClientRoomName().equals(newRoomName))
+                {
+                    stringbuffer.append(clientObject.getClientUserName());
+                    stringbuffer.append(";");
+                }
+            }
+            SendMessageToClient(clientSocket,stringbuffer.toString());
+
+
+            /**********Inform to Old Room and New Room Users**********/
+            String m_OldRoomRFC = "LERO " + userName+"~" + newRoomName;
+            String m_NewRoomRFC = "JORO " + userName;
+            for(G_ILoop = 0; G_ILoop < m_userListSize; G_ILoop++)
+            {
+                clientObject = (ClientObject) userArrayList.get(G_ILoop);
+                if(clientObject.getClientRoomName().equals(m_oldRoomName))
+                    SendMessageToClient(clientObject.getClientSocket(), m_OldRoomRFC);
+                if((clientObject.getClientRoomName().equals(newRoomName)) && (!(clientObject.getClientUserName().equals(userName))))
+                    SendMessageToClient(clientObject.getClientSocket(), m_NewRoomRFC);
+            }
+        }
+    }
+
+
 
     private void ExitServer() {
         // Xoa object
