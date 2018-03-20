@@ -290,20 +290,20 @@ public class ChatServer extends Frame implements Serializable, ActionListener, R
         int m_clientIndex = GetIndexOf(userName);
         if(m_clientIndex >= 0)
         {
-            /********Update the Old Room to New Room and send the RFC**********/
+            // Cap nhat OldRoom thanh newRoom va gui ma RFC
             ClientObject TempClientObject = (ClientObject) userArrayList.get(m_clientIndex);
             String m_oldRoomName = TempClientObject.getClientRoomName();
             TempClientObject.setClientRoomName(newRoomName);
             userArrayList.set(m_clientIndex,TempClientObject);
             SendMessageToClient(clientSocket,"CHRO " + newRoomName);
 
-            /****Send all the Users list of that particular room to that client socket****/
+            // Gui tat ca danh sach nguoi dung tham gia phong
             int m_userListSize = userArrayList.size();
             StringBuffer stringbuffer = new StringBuffer("LIST ");
             for(G_ILoop = 0; G_ILoop < m_userListSize; G_ILoop++)
             {
                 clientObject = (ClientObject) userArrayList.get(G_ILoop);
-                /***Check the Room Name*****/
+                // Kiem tra ten phong
                 if(clientObject.getClientRoomName().equals(newRoomName))
                 {
                     stringbuffer.append(clientObject.getClientUserName());
@@ -313,7 +313,7 @@ public class ChatServer extends Frame implements Serializable, ActionListener, R
             SendMessageToClient(clientSocket,stringbuffer.toString());
 
 
-            /**********Inform to Old Room and New Room Users**********/
+            // Thong bao nguoi dung phong cu, phong moi
             String m_OldRoomRFC = "LERO " + userName+"~" + newRoomName;
             String m_NewRoomRFC = "JORO " + userName;
             for(G_ILoop = 0; G_ILoop < m_userListSize; G_ILoop++)
@@ -325,6 +325,54 @@ public class ChatServer extends Frame implements Serializable, ActionListener, R
                     SendMessageToClient(clientObject.getClientSocket(), m_NewRoomRFC);
             }
         }
+    }
+
+    // Gui tin nhan chung
+    protected void SendGeneralMessage(Socket clientSocket, String message, String userName,String roomName)
+    {
+        boolean m_floodFlag = false;
+        messageArrayList.add(userName);
+        if(messageArrayList.size() > MAX_MESSAGE)
+        {
+            messageArrayList.remove(0);
+            messageArrayList.trimToSize();
+
+            /*********Kiem tra neu nguoi dung dang lam tran tin nhan*********/
+            String m_firstMessage = (String) messageArrayList.get(0);
+            int m_messageListSize = messageArrayList.size();
+            for(G_ILoop = 1; G_ILoop < 	m_messageListSize; G_ILoop++)
+            {
+                if(messageArrayList.get(G_ILoop).equals(m_firstMessage))
+                {
+                    m_floodFlag = true;
+                }
+                else
+                {
+                    m_floodFlag = false;
+                    break;
+                }
+            }
+        }
+
+        /*******Gui tin nhan chung toi tat ca nguoi dung # **/
+        int m_userListSize = userArrayList.size();
+        String m_messageRFC = "MESS " + userName+":" + message;
+        for(G_ILoop = 0; G_ILoop < m_userListSize; G_ILoop++)
+        {
+            clientObject = (ClientObject) userArrayList.get(G_ILoop);
+            if((clientObject.getClientRoomName().equals(roomName)) && (!(clientObject.getClientUserName().equals(userName))))
+            {
+                SendMessageToClient(clientObject.getClientSocket(), m_messageRFC);
+            }
+        }
+
+        /******** :)) Kick nguoi dung neu tiep tuc lam tran tin nhan **/
+        if(m_floodFlag)
+        {
+            SendMessageToClient(clientSocket,"KICK ");
+            messageArrayList.clear();
+        }
+
     }
 
 
