@@ -13,6 +13,7 @@ public class ChatClient extends Frame implements Serializable, Runnable, KeyList
     MediaTracker tracker;
     Image imgLogo, imgBanner;
     Image[] iconArray;
+    Font textFont;
     //
     public ChatClient(){
         // Thiet dat size cho frame
@@ -99,6 +100,20 @@ public class ChatClient extends Frame implements Serializable, Runnable, KeyList
     }
 
     private void InitComponents() {
+        // Background
+        setBackground(new Color(224,236,254));
+        // Font
+        Font font = new Font("Serif", Font.BOLD, 11);
+        textFont = new Font("Diaglog", 0, 11);
+        setFont(font);
+        // Top Panel
+        Panel topPanel = new Panel(new BorderLayout());
+        topPanel.setBackground(Color.GREEN);
+        Panel logoPanel = new ImagePanel(this,imgLogo);
+        topPanel.add("East",logoPanel);
+        Panel bannerPanel = new ImagePanel(this,imgBanner);
+        topPanel.add("West",bannerPanel);
+        add("North",topPanel);
     }
 
     public static void main(String[] args) {
