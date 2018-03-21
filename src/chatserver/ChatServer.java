@@ -61,7 +61,7 @@ public class ChatServer extends Frame implements Serializable, ActionListener, R
         add("Center",centerPanel);
 
         //
-        this.setSize(400, 150);
+        this.setSize(400, 200);
         this.show();
 
         addWindowListener(new WindowAdapter() {
@@ -420,5 +420,8 @@ public class ChatServer extends Frame implements Serializable, ActionListener, R
         cmdStart.setEnabled(true);
     }
 
-
+    public static void main(String[] args) {
+        ChatServer mainFrame = new ChatServer();
+        mainFrame.setVisible(true);
+    }
 }
