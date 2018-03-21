@@ -8,6 +8,11 @@ public class ChatClient extends Frame implements Serializable, Runnable, KeyList
     // Global variables
     Toolkit toolkit;
     MenuItem loginItem, disconnectItem, seperatorItem, quitItem, aboutItem;
+    String userName, userRoom, chatLogo, bannerName, roomList;
+    int iconCount, G_ILoop;
+    MediaTracker tracker;
+    Image imgLogo, imgBanner;
+    Image[] iconArray;
     //
     public ChatClient(){
         // Thiet dat size cho frame
@@ -54,6 +59,46 @@ public class ChatClient extends Frame implements Serializable, Runnable, KeyList
         menuBar.add(loginMenu);
         menuBar.add(aboutMenu);
         setMenuBar(menuBar);
+
+        // Thiet dat cac thong so
+        userName 	= "";
+        userRoom	="";
+        iconCount 	= 21;
+        chatLogo	= "images/logo.gif";
+        bannerName 	= "images/defaultbanner.gif";
+        roomList 	= "";
+
+        // Load anh logo va banner
+        tracker = new MediaTracker(this);
+        int imageCount = 0;
+        imgLogo = toolkit.getImage(chatLogo);
+        tracker.addImage(imgLogo,imageCount);
+        imageCount++;
+        imgBanner 	= toolkit.getImage(bannerName);
+        tracker.addImage(imgBanner,imageCount);
+        imageCount++;
+
+        // Load icon
+        iconArray = new Image[iconCount];
+        for(G_ILoop = 0; G_ILoop < iconCount; G_ILoop++)
+        {
+            iconArray[G_ILoop] = toolkit.getImage("icons/photo"+G_ILoop+".gif");
+            tracker.addImage(iconArray[G_ILoop],imageCount);
+            imageCount++;
+        }
+
+        // TODO: Init PrivateChat Window
+        try{
+            tracker.waitForAll();
+        } catch (InterruptedException e){}
+
+        // Set icon image
+        setIconImage(toolkit.getImage("images/logo.gif"));
+
+        InitComponents();
+    }
+
+    private void InitComponents() {
     }
 
     public static void main(String[] args) {
