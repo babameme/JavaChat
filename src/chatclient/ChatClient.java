@@ -113,7 +113,7 @@ public class ChatClient extends Frame implements Serializable, Runnable, KeyList
         setFont(font);
         // Top Panel
         Panel topPanel = new Panel(new BorderLayout());
-        topPanel.setBackground(Color.RED);
+        topPanel.setBackground(new Color(237, 27, 36));
         Panel logoPanel = new ImagePanel(this, imgLogo);
         topPanel.add("East",logoPanel);
         Panel bannerPanel = new ImagePanel(this, imgBanner);
@@ -157,6 +157,29 @@ public class ChatClient extends Frame implements Serializable, Runnable, KeyList
         centerPanel.add("South", inputPanel);
 
         add("Center", centerPanel);
+
+        // Disable all components
+        DisableAll();
+
+        // Login to Chat
+        LoginToChat();
+    }
+
+    private void LoginToChat() {
+        // TODO: Create form login Information Dialog
+    }
+
+    // Function to disable all components
+    private void DisableAll() {
+        txtMessage.setEnabled(false);
+        cmdSend.setEnabled(false);
+        // TODO: Tap Panel disable
+        disconnectItem.setEnabled(false);
+        loginItem.setEnabled(false);
+
+        userName = "";
+        userRoom = "";
+        totalUserCount = 0;
     }
 
     private void UpdateinformationLabel() {
