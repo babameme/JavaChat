@@ -9,11 +9,15 @@ public class ChatClient extends Frame implements Serializable, Runnable, KeyList
     Toolkit toolkit;
     MenuItem loginItem, disconnectItem, seperatorItem, quitItem, aboutItem;
     String userName, userRoom, chatLogo, bannerName, roomList;
-    int iconCount, G_ILoop;
+    StringBuffer stringBuffer;
+    int iconCount, G_ILoop, totalUserCount = 0;
     MediaTracker tracker;
     Image imgLogo, imgBanner;
     Image[] iconArray;
     Font textFont;
+    Label informationLabel;
+    TextField txtMessage;
+    CustomButton cmdSend, cmdExit;
     //
     public ChatClient(){
         // Thiet dat size cho frame
@@ -66,7 +70,8 @@ public class ChatClient extends Frame implements Serializable, Runnable, KeyList
         userRoom	="";
         iconCount 	= 21;
         chatLogo	= "images/logo.gif";
-        bannerName 	= "images/defaultbanner.gif";
+//        bannerName 	= "images/defaultbanner.gif";
+        bannerName 	= "images/hocvienanninhnhandan.jpg";
         roomList 	= "";
 
         // Load anh logo va banner
@@ -108,12 +113,64 @@ public class ChatClient extends Frame implements Serializable, Runnable, KeyList
         setFont(font);
         // Top Panel
         Panel topPanel = new Panel(new BorderLayout());
-        topPanel.setBackground(Color.GREEN);
-        Panel logoPanel = new ImagePanel(this,imgLogo);
+        topPanel.setBackground(Color.RED);
+        Panel logoPanel = new ImagePanel(this, imgLogo);
         topPanel.add("East",logoPanel);
-        Panel bannerPanel = new ImagePanel(this,imgBanner);
+        Panel bannerPanel = new ImagePanel(this, imgBanner);
         topPanel.add("West",bannerPanel);
         add("North",topPanel);
+
+        // Panel Thong tin user
+        Panel centerPanel = new Panel(new BorderLayout());
+        Panel informationPanel = new Panel(new BorderLayout());
+        informationPanel.setBackground(Color.blue);
+        informationLabel = new Label();
+        informationLabel.setAlignment(1);
+        UpdateinformationLabel();
+        informationLabel.setForeground(Color.pink);
+        informationPanel.add("Center",informationLabel);
+        centerPanel.add("North",informationPanel);
+
+        // TODO: Message Canvas - Add to message Panel, centerPanel
+
+        // Input Panel - Textbook
+        Panel inputPanel = new Panel(new BorderLayout());
+        Panel textBoxPanel = new Panel(new BorderLayout());
+        Label lblGeneral = new Label("General Message!");
+        txtMessage = new TextField();
+        txtMessage.addKeyListener(this);
+        txtMessage.setFont(textFont);
+        cmdSend = new CustomButton(this,"Send Message!");
+        cmdSend.addActionListener(this);
+        textBoxPanel.add("West",lblGeneral);
+        textBoxPanel.add("Center",txtMessage);
+        textBoxPanel.add("East",cmdSend);
+        inputPanel.add("Center",textBoxPanel);
+
+        Panel inputButtonPanel =new Panel(new BorderLayout());
+        cmdExit = new CustomButton(this,"Exit Chat");
+        cmdExit.addActionListener(this);
+        inputButtonPanel.add("Center",cmdExit);
+        inputPanel.add("East",inputButtonPanel);
+
+        // TODO: empty Panel ?? neccesarry
+        centerPanel.add("South", inputPanel);
+
+        add("Center", centerPanel);
+    }
+
+    private void UpdateinformationLabel() {
+        stringBuffer = new StringBuffer();
+        stringBuffer.append("User Name: ");
+        stringBuffer.append(userName);
+        stringBuffer.append("       ");
+        stringBuffer.append("Room Name: ");
+        stringBuffer.append(userRoom);
+        stringBuffer.append("       ");
+        stringBuffer.append("Numbers Of Users: ");
+        stringBuffer.append(totalUserCount);
+        stringBuffer.append("       ");
+        informationLabel.setText(stringBuffer.toString());
     }
 
     public static void main(String[] args) {
